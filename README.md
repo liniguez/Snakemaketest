@@ -5,7 +5,17 @@ Testing Snakemake
 ## Conda environment
 
 ```{bash}
-conda create -n snakemaketest snakemake salmon=1.4.0 \
-                             samtools=1.9 bioconductor-tximport=1.18.0 \
-                             r-readr=1.4.0  bioconductor-genomicfeatures=1.42.2
+conda install mamba -n base
+mamba create -n snakemaketest snakemake=6.9.1 bioconductor-tximport=1.20.0 \
+      r-readr=2.0.2 bioconductor-genomicfeatures=1.44.0 salmon=1.5.2 future=0.18.2 \
+      parallel-fastq-dump=0.6.6 bowtie=1.3.1
+#it might take a while!
+```
+
+```{bash}
+qlogin -l virtual_free=4G -pe smp 8 -q interactive
+conda activate snakemaketest
+mkdir snakemaketest & cd snakemaketest
+
+wget 
 ```
