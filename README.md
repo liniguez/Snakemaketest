@@ -16,6 +16,11 @@ mamba create -n snakemaketest snakemake=6.9.1 bioconductor-tximport=1.20.0 \
 qlogin -l virtual_free=4G -pe smp 8 -q interactive
 conda activate snakemaketest
 mkdir snakemaketest & cd snakemaketest
+wget https://raw.githubusercontent.com/LIniguez/Snakemaketest/main/Snakefile
+wget https://raw.githubusercontent.com/LIniguez/Snakemaketest/main/samples.txt
+wget https://raw.githubusercontent.com/LIniguez/Snakemaketest/main/configure.yaml
+```
 
-wget 
+```{bash}
+snakemake --keep-going --cores 4 --printshellcmds --reason
 ```
