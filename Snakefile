@@ -8,7 +8,7 @@ run2name={r[header.index('Run')]:r[header.index('SampleName')] for r in metadata
 sp_samp= {r[header.index('SampleName')]:r[header.index('Sp')] for r in metadata}
 out_f= {r[header.index('SampleName')]:r[header.index('outFolder')] for r in metadata}
 fold2sp={r[header.index('outFolder')]:r[header.index('Sp')] for r in metadata}
-vstout_ext=["micX","info","exskX","eej2","MULTI3X","IR2","IR.summary_v2.txt"]
+vstout_ext=["micX","info","exskX","eej2","MULTI3X"]
 uniq_outFold=set(out_f.values())
 
 concat =dict()
@@ -94,11 +94,7 @@ rule vast_tools_align:
         "{outFolder}/to_combine/{name}.info",
         "{outFolder}/to_combine/{name}.exskX",
         "{outFolder}/to_combine/{name}.eej2",
-        "{outFolder}/to_combine/{name}.MULTI3X",
-        "{outFolder}/to_combine/{name}.IR2",
-        "{outFolder}/to_combine/{name}.IR.summary_v2.txt",
-        "{outFolder}/expr_out/{name}.3bias",
-        "{outFolder}/expr_out/{name}.cRPKM"
+        "{outFolder}/to_combine/{name}.MULTI3X"
     params:
         outFolder=lambda x: out_f[x.name],
         sp=lambda x: sp_samp[x.name],
@@ -116,15 +112,7 @@ rule vast_tools_combine:
     input:
         lambda wildcards:
              expand(wildcards.outFolder+"/to_combine/{name}.{exts}", zip, name=samples_fold[wildcards.outFolder], exts=vstout_ext),
-        lambda wildcards:
-             expand(wildcards.outFolder+"/expr_out/{name}.3bias", zip, name=samples_fold[wildcards.outFolder], exts=vstout_ext),
-        lambda wildcards:
-             expand(wildcards.outFolder+"/expr_out/{name}.cRPKM", zip, name=samples_fold[wildcards.outFolder], exts=vstout_ext)
     output:
-        a="{outFolder}/TPM-{sp2name}-{nsamp}-NORM.tab",
-        b="{outFolder}/cRPKM-{sp2name}-{nsamp}-NORM.tab",
-        c="{outFolder}/cRPKM-{sp2name}-{nsamp}.tab",
-        d="{outFolder}/TPM-{sp2name}-{nsamp}.tab",
         e="{outFolder}/INCLUSION_LEVELS_FULL-{sp2name}-{nsamp}.tab",
     params:
         outFolder="{outFolder}/",
@@ -134,8 +122,7 @@ rule vast_tools_combine:
         " --cores 1"
         " -o {params.outFolder}"
         " --sp {params.sp}"
-        " --IR_version 2"
-        " --TPM --norm &> {params.outFolder}/COMBINE.log"
+        " --IR_version 2 -no_expr --onlyEX &> {params.outFolder}/COMBINE.log"
 
 rule vast_tools_tidy:
     input:
@@ -221,3 +208,4 @@ rule Salmon_tables:
         fold= "{outFolder}"
     shell:
         "Rscript --vanilla /users/mirimia/liniguez/scripts/merge_tables.R {input.experiments} {params.fold} {input.t2g}"
+
