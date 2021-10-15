@@ -1,4 +1,4 @@
-# Snakemaketest
+# Snakemake test for Irimia's Lab
 Testing Snakemake
 
 The only requirement for running these scripts is to have conda isntalled. More information about conda and how to use it and install it [here](https://bioconda.github.io/)
