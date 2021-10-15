@@ -1,0 +1,25 @@
+run_table: "samples.txt"
+
+directories:
+  nobackup_fastq: "/users/mirimia/liniguez/no_backup/liniguez/fastqs"
+  references: "/users/mirimia/liniguez/references/"
+
+translateSP:
+  Hs2: "hg38"
+  Rno: "rn6"
+  Mm2: "mm10"
+
+genome:
+  Hs2: "http://ftp.ensembl.org/pub/release-104/fasta/homo_sapiens/dna/Homo_sapiens.GRCh38.dna.toplevel.fa.gz"
+  Rno: "http://ftp.ensembl.org/pub/release-104/fasta/rattus_norvegicus/dna/Rattus_norvegicus.Rnor_6.0.dna.toplevel.fa.gz"
+  Mm2: "http://ftp.ensembl.org/pub/release-104/fasta/mus_musculus/dna/Mus_musculus.GRCm39.dna.toplevel.fa.gz"
+
+transcriptome:
+  Hs2: "http://ftp.ensembl.org/pub/release-104/fasta/homo_sapiens/cdna/Homo_sapiens.GRCh38.cdna.all.fa.gz"
+  Rno: "http://ftp.ensembl.org/pub/release-104/fasta/rattus_norvegicus/cdna/Rattus_norvegicus.Rnor_6.0.cdna.all.fa.gz"
+  Mm2: "http://ftp.ensembl.org/pub/release-104/fasta/mus_musculus/cdna/Mus_musculus.GRCm39.cdna.all.fa.gz"
+
+annotation:
+  Hs2: "http://ftp.ensembl.org/pub/release-104/gtf/homo_sapiens/Homo_sapiens.GRCh38.104.gtf.gz"
+  Rno: "http://ftp.ensembl.org/pub/release-104/gtf/rattus_norvegicus/Rattus_norvegicus.Rnor_6.0.104.gtf.gz"
+  Mm2: "http://ftp.ensembl.org/pub/release-104/gtf/mus_musculus/Mus_musculus.GRCm39.104.gtf.gz"

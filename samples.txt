@@ -1,0 +1,4 @@
+Run	download_path	SampleName	Sp	outFolder	Media	Plate	Well	PE	Spots
+ERR1211538	/users/mirimia/liniguez/no_backup/liniguez/fastqs/ERR1211538/ERR1211538.sra	2i_SC	Mm2	Testoutput	2i	4	75	TRUE	1402223
+ERR523064	/users/mirimia/liniguez/no_backup/liniguez/fastqs/ERR523064/ERR523064.sra	2i_SC	Mm2	Testoutput	2i	6	96	TRUE	1435762
+ERR523091	/users/mirimia/liniguez/no_backup/liniguez/fastqs/ERR523091/ERR523091.sra	Serum_SC	Mm2	Testoutput	serum	1	94	TRUE	2019047
