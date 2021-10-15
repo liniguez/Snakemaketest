@@ -22,5 +22,5 @@ wget https://raw.githubusercontent.com/LIniguez/Snakemaketest/main/configure.yam
 ```
 
 ```{bash}
-snakemake --keep-going --cores 4 --printshellcmds --reason
+snakemake --keep-going --cores 8 --printshellcmds --reason
 ```
