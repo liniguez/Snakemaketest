@@ -4,7 +4,7 @@ Testing Snakemake in CRG cluster
 The only requirement for running these scripts is to have conda isntalled. More information about conda and how to use it and install it [here](https://bioconda.github.io/)
 
 
-## Conda environment
+## Option 1: Conda environment for local run
 
 ```{bash}
 conda install mamba -n base
@@ -23,3 +23,16 @@ cd Snakemaketest
 ```{bash}
 snakemake --keep-going --cores 8 --printshellcmds --reason
 ```
+
+## Option 2: Conda environment for Cluster/Parallel run
+
+Another posibility is to run snakemake in the login node with a screen. (More info about screen [here](https://linuxize.com/post/how-to-use-linux-screen/)) Using this option snakemake will submit all parallelizable jobs to different nodes. For this option you won't need to install all packages at the beginnig and instead it will use conda environments.
+
+```{bash}
+conda install mamba -n base
+mamba create -n snakemaketest snakemake=6.9.1
+git clone https://github.com/LIniguez/Snakemaketest.git
+cd Snakemaketest
+snakemake -s Snakefile_cluster --profile CRG_profile/
+```
+*Note: for this option you will need to have a forder in the workinfolder named envs/ with all the environments you will use. Additionally you will be using now a profile where you specify the resurces needed for each rule!*
