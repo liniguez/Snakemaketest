@@ -1,0 +1,10 @@
+cluster: "qsub {cluster.args} -N {cluster.name} -q {cluster.queue} -o {cluster.output} -l virtual_free={cluster.memory} -l h_rt={cluster.time} -pe smp {cluster.nproc}"
+cluster-status: "qsub_status.py"
+cluster-config: "cluster.yaml"
+jobs: 1000
+local-cores: 4
+rerun-incomplete: false
+keep-going: true
+use-conda: true
+printshellcmds: true
+reason: true

@@ -1,0 +1,9 @@
+name: R
+channels:
+  - bioconda
+  - conda-forge
+  - defaults
+dependencies:
+  - bioconductor-tximport == 1.20.0
+  - r-readr == 2.0.2
+  - bioconductor-genomicfeatures == 1.44.0
