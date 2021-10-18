@@ -35,4 +35,6 @@ git clone https://github.com/LIniguez/Snakemaketest.git
 cd Snakemaketest
 snakemake -s Snakefile_cluster --profile CRG_profile/
 ```
+
 *Note: for this option you will need to have a forder in the workinfolder named envs/ with all the environments you will use. Additionally you will be using now a profile where you specify the resurces needed for each rule!*
+Option -s stands for a specific snakefile script. 
