@@ -1,0 +1,166 @@
+#! /usr/bin/env python
+
+configfile: "config.yaml"
+metadata = [r.strip('\n').split('\t') for r in open(config['run_table'], 'r')]
+header = metadata.pop(0)
+dpath = {r[header.index('Run')]:r[header.index('download_path')] for r in metadata}
+run2name={r[header.index('Run')]:r[header.index('SampleName')] for r in metadata}
+sp_samp= {r[header.index('SampleName')]:r[header.index('Sp')] for r in metadata}
+out_f= {r[header.index('SampleName')]:r[header.index('outFolder')] for r in metadata}
+fold2sp={r[header.index('outFolder')]:r[header.index('Sp')] for r in metadata}
+vstout_ext=["micX","info","exskX","eej2","MULTI3X"]
+uniq_outFold=set(out_f.values())
+
+concat =dict()
+for k,v in run2name.items():
+    if v in concat:
+        concat[v].append(k)
+    else:
+        concat[v] = [k]
+
+samples_fold =dict()
+for k,v in out_f.items():
+    if v in samples_fold:
+        samples_fold[v].append(k)
+    else:
+        samples_fold[v] = [k]
+
+num_samp=dict()
+for k,v in samples_fold.items():
+    num_samp[k]=str(len(v))
+
+sp_name=dict()
+for k,v in fold2sp.items():
+    sp_name[k]=config['translateSP'][v]
+
+rule all:
+    input:
+        expand("{r}/Salmon_Gene_table_counts.csv", r=set(uniq_outFold)),
+        expand("{r}/Salmon_Transcript_table_counts.csv", r=set(uniq_outFold)),
+        expand("{r}/Salmon_Gene_table_TPM.csv", r=set(uniq_outFold))
+
+rule downloadSRA:
+    output:
+        sra = "SRA/{runid}.sra"
+    params:
+        url = lambda x: dpath[x.runid]
+    shell:
+        "wget -q -O {output.sra} {params.url}"
+
+rule fastq_dump:
+    input:
+        "SRA/{runid}.sra"
+    output:
+        r1 = "SRA/{runid}_1.fastq.gz",
+        r2 = "SRA/{runid}_2.fastq.gz"
+    params:
+        dir = "SRA/",
+        name = lambda x: x.runid
+    threads: 4
+    conda:
+            "envs/runutils_old.yaml"
+    shell:
+        "parallel-fastq-dump"
+        " -t {threads}"
+        " --tmpdir ./"
+        " --gzip"
+        " -O {params.dir}"
+        " --split-3"
+        " -F -B -Q 33 "
+        " --skip-technical"
+        " --defline-qual '+'"
+        " -s {input} && rm {input}"
+
+rule concatenate:
+    input:
+        fastqs1 = lambda wildcards:
+            expand("SRA/{runid}_1.fastq.gz", runid=concat[wildcards.name]),
+        fastqs2 = lambda wildcards:
+            expand("SRA/{runid}_2.fastq.gz", runid=concat[wildcards.name])
+    output:
+         ofast1= "concat/{name}_1.fastq.gz",
+         ofast2= "concat/{name}_2.fastq.gz"
+    params:
+        dir = "concat/{name}"
+    shell:
+        "cat {input.fastqs1} > {output.ofast1} && cat {input.fastqs2} > {output.ofast2} && rm {input.fastqs1} {input.fastqs2}"
+
+
+rule downloadgenome:
+    output:
+        fasta="genome_{spec}.fa"
+    params:
+        url2=lambda wildcards: config['genome'][wildcards.spec]
+    shell:
+        "wget -O {output.fasta}.gz {params.url2} && gunzip {output.fasta}.gz"
+
+rule buildTR:
+    input:
+        gtf=lambda wildcards: config['annotation'][wildcards.spec],
+        fasta="genome_{spec}.fa"
+    output:
+        "{spec}_transcriptome.fa"
+    conda:
+        "envs/runutils.yaml"
+    shell:
+        "gffread -g {input.fasta} -w {output} {input.gtf} && rm {input.fasta} {input.fasta}.fai"
+
+rule salmon_index:
+    input:
+        tr="{spec}_transcriptome.fa",
+    output:
+        config['directories']['references']+"Salmon/{spec}/pos.bin"
+    params:
+        d=config['directories']['references']+"Salmon/{spec}/"
+    conda:
+        "envs/salmon.yaml"
+    shell:
+        "salmon index -t {input.tr} -i {params.d} -k 29 &&"
+	    " rm {input.tr}"
+
+rule transcript2gene:
+    input:
+        gtf=lambda wildcards: config['annotation'][wildcards.spec]
+    output:
+        config['directories']['references']+"Salmon/{spec}_transcript2gen.txt"
+    params:
+        refdir= config['directories']['references']+"Salmon/"
+    conda:
+        "envs/R.yaml"
+    shell:
+        "mkdir -p {params.refdir} &&"
+        " Rscript --vanilla scripts/make_tx2gene.R {input} {output} "
+
+rule salmonMapping:
+    input:
+        r1= "concat/{name}_1.fastq.gz",
+        r2= "concat/{name}_2.fastq.gz",
+        idx = lambda x: config['directories']['references']+"Salmon/"+fold2sp[x.outFolder]+"/pos.bin"
+    output:
+        tr="{outFolder}/Salmon/{name}/quant.sf"
+    params:
+        idxTRUE = lambda x: config['directories']['references']+"Salmon/"+fold2sp[x.outFolder],
+        dir="{outFolder}/Salmon/{name}"
+    threads: 8
+    conda:
+        "envs/salmon.yaml"
+    shell:
+        "salmon quant -l A -i {params.idxTRUE} -1 {input.r1} -2 {input.r2} -p {threads}"
+        " -o {params.dir} --seqBias --gcBias 2>&1 {params.dir}/SALMON.log "
+
+rule Salmon_tables:
+    input:
+        lambda wildcards:
+             expand(wildcards.outFolder+"/Salmon/{sampleName}/quant.sf", sampleName=samples_fold[wildcards.outFolder]),
+        experiments = config['run_table'],
+        t2g = lambda x: config['directories']['references']+"Salmon/"+fold2sp[x.outFolder]+"_transcript2gen.txt"
+    output:
+        gc = "{outFolder}/Salmon_Gene_table_counts.csv",
+        tc = "{outFolder}/Salmon_Transcript_table_counts.csv",
+        gtpm = "{outFolder}/Salmon_Gene_table_TPM.csv"
+    params:
+        fold= "{outFolder}"
+    conda:
+        "envs/R.yaml"
+    shell:
+        "Rscript --vanilla scripts/merge_tables.R {input.experiments} {params.fold} {input.t2g}"

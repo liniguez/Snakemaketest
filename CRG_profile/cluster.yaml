@@ -6,18 +6,8 @@ __default__:
   memory: "8G"
   time: "06:00:00"
   nproc:  4
-cpfastq:
-    time: 60
-    nproc: 1
-    memory: "1G"
-    output: ".snakemake/log/slurm-$$.{rule}.{wildcards.runid}.out"
 downloadSRA:
     time: "00:15:00"
-    nproc: 1
-    memory: "1G"
-    output: ".snakemake/log/slurm-$$.{rule}.{wildcards.runid}.out"
-downloadfastq:
-    time: "00:05:00"
     nproc: 1
     memory: "1G"
     output: ".snakemake/log/slurm-$$.{rule}.{wildcards.runid}.out"
@@ -25,22 +15,6 @@ fastq_dump:
     time: "04:00:00"
     nproc: 4
     output: ".snakemake/log/slurm-$$.{rule}.{wildcards.runid}.out"
-vast_tools_align:
-    time: "24:00:00"
-    nproc: 6
-    memory: "12G"
-    queue: "long-sl7"
-vast_tools_combine:
-    time: "24:00:00"
-    nproc: 6
-    memory: "8G"
-    queue: "long-sl7"
-    output: ".snakemake/log/slurm-$$.{rule}.out"
-vast_tools_tidy:
-    timpe: "01:00:00"
-    nproc: 1
-    memory: "1G"
-    output: ".snakemake/log/slurm-$$.{rule}.out"
 concatenate:
     timpe: "01:00:00"
     nproc: 1
@@ -65,12 +39,12 @@ Salmon_tables:
     nproc: 1
     memory: 4G
     output: ".snakemake/log/slurm-$$.{rule}.{wildcards.outFolder}.out"
-downloadTR:
+buildTR:
     time: "00:15:00"
     nproc: 1
     memory: 1G
     output: ".snakemake/log/slurm-$$.{rule}.out"
-downloadANN:
+downloadgenome:
     time: "00:15:00"
     nproc: 1
     memory: 1G

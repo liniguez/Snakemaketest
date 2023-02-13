@@ -4,5 +4,4 @@ channels:
   - conda-forge
   - defaults
 dependencies:
-  - salmon ==1.5.2
-  - samtools ==1.13
+  - salmon ==1.9.0

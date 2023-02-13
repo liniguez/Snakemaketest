@@ -1,4 +1,4 @@
-Run	download_path	SampleName	Sp	outFolder	Media	Plate	Well	PE	Spots
-ERR1211538	/users/mirimia/liniguez/no_backup/liniguez/fastqs/ERR1211538/ERR1211538.sra	2i_SC	Mm2	Testoutput	2i	4	75	TRUE	1402223
-ERR523064	/users/mirimia/liniguez/no_backup/liniguez/fastqs/ERR523064/ERR523064.sra	2i_SC	Mm2	Testoutput	2i	6	96	TRUE	1435762
-ERR523091	/users/mirimia/liniguez/no_backup/liniguez/fastqs/ERR523091/ERR523091.sra	Serum_SC	Mm2	Testoutput	serum	1	94	TRUE	2019047
+Run	download_path	SampleName	Sp	outFolder	Media	Plate
+SRR18319841	https://sra-downloadb.be-md.ncbi.nlm.nih.gov/sos4/sra-pub-zq-1/SRR018/18319/SRR18319841/SRR18319841.lite.1	Test1	Cel	Testoutput	2i	4
+SRR18319798	https://sra-downloadb.be-md.ncbi.nlm.nih.gov/sos2/sra-pub-zq-20/SRR018/18319/SRR18319798/SRR18319798.lite.1	Test2	Cel	Testoutput	2i	6
+SRR18319795	https://sra-downloadb.be-md.ncbi.nlm.nih.gov/sos3/sra-pub-zq-24/SRR018/18319/SRR18319795/SRR18319795.lite.1	Test3	Cel	Testoutput	serum	1
