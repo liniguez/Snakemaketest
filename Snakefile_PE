@@ -115,6 +115,7 @@ rule salmon_index:
     conda:
         "envs/salmon.yaml"
     shell:
+        "mkdir -p {params.dir} && "
         "salmon index -t {input.tr} -i {params.d} -k 29 &&"
 	    " rm {input.tr}"
 

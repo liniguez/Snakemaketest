@@ -140,7 +140,8 @@ rule salmonMapping:
     conda:
         "envs/salmon.yaml"
     shell:
-        "salmon quant -l A -i {params.idxTRUE} -r {input.r1} -p {threads}"
+        "mkdir -p {params.dir} && "
+        " salmon quant -l A -i {params.idxTRUE} -r {input.r1} -p {threads}"
         " -o {params.dir} --seqBias --gcBias 2>&1 {params.dir}/SALMON.log "
 
 rule Salmon_tables:
