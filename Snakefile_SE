@@ -99,7 +99,7 @@ rule buildTR:
     conda:
         "envs/runutils.yaml"
     shell:
-        "gffread -g {input.fasta} -w {output} {input.gtf} && rm {input.fasta} {input.fasta}.fai"
+        "grep '\tgene\t' -vP {input.gtf} | gffread -g {input.fasta} -w {output} - && rm {input.fasta} {input.fasta}.fai"
 
 rule salmon_index:
     input:
